@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Article Avengers</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div class="app">
+      <p class="title">Article Avengers!</p>
+      <p class="subtitle">Generate comics for articles you want to understand!
+      <hr class="divider" />
+      <label>
+        Age:
+        <input type="number" id="age" min="5" max="12">
+      </label>
+
+      <label>
+        Comic Style:
+        <select id="style">
+          <option value="funny">Funny</option>
+          <option value="adventure">Adventure</option>
+          <option value="scifi">Sci-Fi</option>
+        </select>
+      </label>
+
+      <button id="save">Save</button>
+    </div>
+
+    <script src="generate.js"></script>
+
+    <!--
+      This HTML file opens when you click on icon from the toolbar.
+
+      To begin the development, run `npm run watch`.
+      To create a production bundle, use `npm run build`.
+    -->
+  </body>
+</html>
