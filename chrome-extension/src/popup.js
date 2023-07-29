@@ -95,7 +95,27 @@ import './popup.css';
     });
   }
 
-  document.addEventListener('DOMContentLoaded', restoreCounter);
+  document.addEventListener('DOMContentLoaded', function () {
+    restoreCounter();
+
+    // Select all radio buttons within the btn-group
+    let radios = document.querySelectorAll("#style input[type='radio']");
+
+    // Add click event listener to each radio button
+    radios.forEach((radio) => {
+      //FIXME: is this not working?
+      console.log('adding event listener..........');
+      radio.addEventListener('change', function () {
+        if (this.checked) {
+          // 'this' refers to the radio button that just got checked
+          // 'this.value' will give you the value attribute of that radio button
+          console.log(`Selected style: ${this.value}`);
+
+          // Here you can add your logic based on the selected style
+        }
+      });
+    });
+  });
 
   // Communicate with background file by sending a message
   chrome.runtime.sendMessage(
