@@ -46,6 +46,7 @@
 //   text: document.body.innerText
 // });
 
+console.log("Content script loaded");
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if (request.action === "getContent") {
     let content = document.documentElement.innerText;

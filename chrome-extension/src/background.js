@@ -72,7 +72,9 @@
 
 import Anthropic from '@anthropic-ai/sdk';
 
+console.log("Background script loaded");
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  console.log('Background script Message received:', request);
   if (request.action === "generateComic") {
     let age = request.age;
     let style = request.style;
