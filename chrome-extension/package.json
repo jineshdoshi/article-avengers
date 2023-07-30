@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.5.8",
+    "jspdf": "^2.5.1",
     "node-fetch": "^3.3.2",
     "os-browserify": "^0.3.0"
   }
