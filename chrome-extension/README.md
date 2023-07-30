@@ -98,3 +98,9 @@ DevTools Panel is nothing but a HTML page, which you can reload by following the
 1. Right-click on the Panel HTML
 2. Click **Reload Frame**
 3. And the Panel HTML page will reload
+
+## Open Issues
+Issues that need a fix:
+1. Style-sheet transfer to the build directory (popup.css)
+2. Key **Anthropic Secret Key** saved in popup but windows does not close
+3. Latency improvements to load faster ( Claude-2 is slower than Claude-v1.3 )
