@@ -1,10 +1,65 @@
 import {jsPDF} from "jspdf";
+import 'jspdf-autotable';
 
-function generateImgPDF(base64Image) {
+function generateImgPDF(base64Image, pixelWidth, pixelHeight, bookInfo) {
+  console.log("inside generateImgPDF: ", base64Image);
   let doc = new jsPDF();
 
-  // Add the base64 image to the document
-  doc.addImage(base64Image, 'JPEG', 10, 10, 180, 160);
+  doc.setFontSize(22);
+  doc.text(bookInfo.title, 10, 20);
+
+  // Add a new page for the dialogues and images
+  doc.addPage();
+
+  // Variables for image dimensions
+  const imgWidth = Math.ceil(pixelWidth/2.85), imgHeight = Math.ceil(pixelHeight/3.2), imgX = 10, imgY = 10;
+
+  // Add each image and dialogue to the PDF
+  for (let i = 0; i < bookInfo.images.length; i++) {
+    // If this is not the first image/dialogue, add a new page
+    if (i > 0) {
+      doc.addPage();
+    }
+
+    // Add the image to the page
+    doc.addImage(bookInfo.images[i], "PNG", imgX, imgY, imgWidth, imgHeight);
+
+    // Calculate the position for the dialogue
+    let dialoguePosition = 10 + imgHeight + 10;
+
+    // Add the dialogues to the page
+    doc.setFontSize(12);
+    let firstCharacter = bookInfo.characters[0];
+    let secondCharacter = bookInfo.characters[1];
+    console.log(firstCharacter);
+    console.log(secondCharacter);
+    doc.text(`${firstCharacter}: ${bookInfo.dialogues[firstCharacter][i]}`, 10, dialoguePosition);
+    doc.text(`${secondCharacter}: ${bookInfo.dialogues[secondCharacter][i]}`, 10, dialoguePosition + 10);
+  }
+
+  // // Define image dimensions and position
+  // // const imgWidth = 180, imgHeight = 160, imgX = 10, imgY = 10;
+  // // const imgWidth = Math.ceil(pixelWidth/2.85), imgHeight = Math.ceil(pixelHeight/3.2), imgX = 10, imgY = 10;
+  //
+  // // Add the base64 image to the document
+  // doc.addImage(base64Image, 'JPEG', imgX, imgY, imgWidth, imgHeight);
+  //
+  // // Define the text and measure its width
+  // const textWidth = doc.getTextWidth(bookInfo.title);
+  //
+  // // Define rectangle coordinates and dimensions
+  // const padding = 10; // Padding on either side of the text
+  // const rectWidth = textWidth + padding * 2, rectHeight = 20;
+  // const rectX = imgX, rectY = imgY + imgHeight - rectHeight; // place rectHeight units above the bottom of the image
+  //
+  // // Create a filled rectangle
+  // doc.setFillColor(255, 255, 255); // white fill color
+  // doc.rect(rectX, rectY, rectWidth, rectHeight, 'F');
+  //
+  // // Add text to the rectangle
+  // const textX = rectX + padding; // padding from the left
+  // const textY = rectY + rectHeight / 2 + 3; // vertically center text with a slight adjustment
+  // doc.text(text, textX, textY);
 
   // Output the document as a Blob
   let pdfBlob = doc.output('blob');
@@ -86,7 +141,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "generateImgPDF") {
-      window.open(generateImgPDF(request.data), '_blank');
+      console.log("popup generateImgPDF listener: ", request.data);
+      window.open(generateImgPDF(request.data, request.pixelWidth, request.pixelHeight, request.bookInfo), '_blank');
     }
   });
 
