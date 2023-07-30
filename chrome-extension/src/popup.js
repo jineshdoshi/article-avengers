@@ -1,5 +1,18 @@
 import {jsPDF} from "jspdf";
 
+function generateImgPDF(base64Image) {
+  let doc = new jsPDF();
+
+  // Add the base64 image to the document
+  doc.addImage(base64Image, 'JPEG', 10, 10, 180, 160);
+
+  // Output the document as a Blob
+  let pdfBlob = doc.output('blob');
+
+  // Create an object URL for the Blob
+  return URL.createObjectURL(pdfBlob);
+}
+
 function generatePDF(data) {
   // Create a new instance of a jsPDF document
   let doc = new jsPDF();
@@ -68,6 +81,12 @@ document.addEventListener('DOMContentLoaded', function() {
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "generatePDF") {
       window.open(generatePDF(request.data), '_blank');
+    }
+  });
+
+  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === "generateImgPDF") {
+      window.open(generateImgPDF(request.data), '_blank');
     }
   });
 
