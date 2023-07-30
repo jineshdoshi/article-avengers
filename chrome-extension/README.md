@@ -10,16 +10,15 @@
 
 1. node version >=18
 
-  Update instructions:
+    Update node instructions:
 
-  ```bash
-  brew install nvm
-  nvm install 18 && nvm use 18
-  node -v
-  ```
+    ```bash
+    brew install nvm
+    nvm install 18 && nvm use 18
+    node -v
+    ```
 
 2. Latest Chrome browser (some chromium browsers like brave may not work)
-
 
 
 ### Clone the repo and run the following on your local
@@ -30,9 +29,6 @@ npm install
 npm run watch
 ```
 
-
-# Chrome Extension FAQs
-
 ## How to load Chrome extension in browser?
 
 Follow these instructions to load your extension in browser:
@@ -40,6 +36,29 @@ Follow these instructions to load your extension in browser:
 2. Check the **Developer mode** checkbox
 3. Click on the **Load unpacked extension** button
 4. Select the folder **my-extension/build**
+
+## How to configure the extension
+
+Note: This is only required one time
+
+1. Update your Anthropic API key in extension options
+
+![options.png](readme-assets/options.png)
+
+![anthropic-api-key-option.png](readme-assets/anthropic-api-key-option.png)
+
+## How it works
+
+Enter age and pick the style of comic and hit Go!
+
+![popup.png](readme-assets/popup.png)
+
+Enjoy the comic syle summary of the web page content will be generated for you!
+
+
+---
+
+# FAQs & Troubleshooting guide for devs
 
 > Note: `build` folder is created when you run either `npm run watch` (for development) or `npm run build` (for production) command.
 
