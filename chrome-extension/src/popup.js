@@ -1,21 +1,38 @@
 import {jsPDF} from "jspdf";
 import 'jspdf-autotable';
 
-function generateImgPDF(base64Image, pixelWidth, pixelHeight, bookInfo) {
-  console.log("inside generateImgPDF: ", base64Image);
+function generateImgPDF(bookInfo, pixelWidth, pixelHeight) {
+
   let doc = new jsPDF();
 
   doc.setFontSize(22);
-  doc.text(bookInfo.title, 10, 20);
 
-  // Add a new page for the dialogues and images
-  doc.addPage();
-
-  // Variables for image dimensions
+  // Variables for Dialogue and Image dimensions
   const imgWidth = Math.ceil(pixelWidth/2.85), imgHeight = Math.ceil(pixelHeight/3.2), imgX = 10, imgY = 10;
 
+// Get the width and height of the text
+  let textDimensions = doc.getTextDimensions(bookInfo.title);
+
+// Calculate the center alignment considering the page size and text's width
+  let x = (imgWidth - textDimensions.w) / 2;
+
+// Calculate the vertical center alignment considering the page size and text's height
+  let y = (imgHeight - textDimensions.h) / 2;
+
+  doc.addImage(bookInfo.images[0], "PNG", imgX, imgY, imgWidth, imgHeight);
+  doc.setFillColor(255, 255, 255);  // RGB for white
+  doc.rect(x, y - textDimensions.h, textDimensions.w + 15, textDimensions.h + 15, 'F');
+
+  // Title is red in color
+  doc.setTextColor(255, 0, 0);
+// Add the text over the rectangle
+  doc.text(bookInfo.title + "!", x+5, y + 5);
+
+  // change it back to black for rest of the pages.
+  doc.setTextColor(0, 0, 0);
+
   // Add each image and dialogue to the PDF
-  for (let i = 0; i < bookInfo.images.length; i++) {
+  for (let i = 1; i < bookInfo.images.length; i++) {
     // If this is not the first image/dialogue, add a new page
     if (i > 0) {
       doc.addPage();
@@ -31,10 +48,14 @@ function generateImgPDF(base64Image, pixelWidth, pixelHeight, bookInfo) {
     doc.setFontSize(12);
     let firstCharacter = bookInfo.characters[0];
     let secondCharacter = bookInfo.characters[1];
-    console.log(firstCharacter);
-    console.log(secondCharacter);
-    doc.text(`${firstCharacter}: ${bookInfo.dialogues[firstCharacter][i]}`, 10, dialoguePosition);
-    doc.text(`${secondCharacter}: ${bookInfo.dialogues[secondCharacter][i]}`, 10, dialoguePosition + 10);
+    let dialogueText1 = bookInfo.dialogues[firstCharacter][i] ? `${firstCharacter}: ${bookInfo.dialogues[firstCharacter][i]}` : ""
+    let dialogueText2 = bookInfo.dialogues[secondCharacter][i] ? `${secondCharacter}: ${bookInfo.dialogues[secondCharacter][i]}` : ""
+    if (i === bookInfo.images.length -1 ) {
+      dialogueText1 = "The End!"
+      // dialogueText2 = `Learn more: ${bookInfo.originalUrl}`;
+    }
+    doc.text(dialogueText1, 10, dialoguePosition);
+    doc.text(dialogueText2, 10, dialoguePosition + 10);
   }
 
   // // Define image dimensions and position
@@ -142,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function() {
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "generateImgPDF") {
       console.log("popup generateImgPDF listener: ", request.data);
-      window.open(generateImgPDF(request.data, request.pixelWidth, request.pixelHeight, request.bookInfo), '_blank');
+      window.open(generateImgPDF(request.bookInfo, request.pixelWidth, request.pixelHeight), '_blank');
     }
   });
 

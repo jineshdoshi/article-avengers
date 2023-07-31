@@ -161,7 +161,7 @@ async function getCurrentPageContent() {
 }
 
 async function getComicSummary(pageContent, age, style) {
-  const userQuestion = `Please generate a conversation between 2 comic characters with a summary of the above text to explain someone of age ${age} in a ${style} comic book style. Remove any unwanted text from your response and limit your response to 1800 characters length. Provide a book title with prefix 'Title: ' and character names separated by 'and' with prefix 'Characters: '.`;
+  const userQuestion = `Please generate a conversation between 2 comic characters with a summary of the above text to explain someone of age ${age} in a ${style} comic book style. Remove any unwanted text from your response and limit your response to 1800 characters length. Provide a book title with prefix 'Title: ' and character names separated by 'and' with prefix 'Characters: '. In the dialogues prefix stick to the exact names provided.`;
   const prompt = `\n\n${pageContent}\n\nHuman: ${userQuestion}\n\nAssistant:`;
   console.log(prompt);
 
@@ -194,8 +194,8 @@ async function generatePdf(comicSummaryText) {
   chrome.runtime.sendMessage({action: "generatePDF", data: comicSummaryText});
 }
 
-async function generateImgPDF(base64data, pixelWidth, pixelHeight, bookInfo ) {
-  chrome.runtime.sendMessage({action: "generateImgPDF", data: base64data, pixelWidth: pixelWidth, pixelHeight: pixelHeight, bookInfo: bookInfo});
+async function generateImgPDF(bookInfo, pixelWidth, pixelHeight ) {
+  chrome.runtime.sendMessage({action: "generateImgPDF", bookInfo: bookInfo, pixelWidth: pixelWidth, pixelHeight: pixelHeight});
 }
 
 chrome.runtime.onMessage.addListener(async function(request, sender, sendResponse) {
@@ -215,27 +215,6 @@ chrome.runtime.onMessage.addListener(async function(request, sender, sendRespons
 
       const pixelWidth = 512
       const pixelHeight = 512
-
-      // // Extract the title
-      // let title = comicSummary.match(/(?<=Title: ).*/)[0];
-      //
-      // // Extract the characters
-      // let characterNames = comicSummary.match(/(?<=Characters: ).*/)[0].split(' and ');
-      //
-      // // Remove lines before the first character's dialogue
-      // comicSummary = comicSummary.replace(/.*(?=[\n|^](${characterNames.join('|')}):)/s, '');
-      //
-      // // Split the dialogues based on the characters' names
-      // let dialogues = comicSummary.split(new RegExp(`(?=[\n|^](${characterNames.join('|')}):)`, 'g'));
-      //
-      // let characterDialogues = {};
-      // for (let name of characterNames) {
-      //   characterDialogues[name] = dialogues.filter(dialogue => dialogue.startsWith(`${name}:`)).map(dialogue => dialogue.replace(`${name}:`, '').trim());
-      // }
-      //
-      // console.log('Title:', title);
-      // console.log('Character Names:', characterNames);
-      // console.log('Character Dialogues:', characterDialogues);
 
       // Extract the title
       let title = comicSummary.match(/(?<=Title: ).*/)[0];
@@ -267,8 +246,8 @@ chrome.runtime.onMessage.addListener(async function(request, sender, sendRespons
       console.log("bookInfo: ", bookInfo);
 
       // generate images from stability.ai
-      const comicImg = await getTextToImage(bookInfo, bookInfo.dialogues[characterNames[0]].length, pixelWidth, pixelHeight);
-      console.log(comicImg.artifacts[0].base64);
+      const comicImg = await getTextToImage(bookInfo, bookInfo.dialogues[characterNames[0]].length + 1, pixelWidth, pixelHeight);
+      // console.log(comicImg.artifacts[0].base64);
       let images = [];
       comicImg.artifacts.forEach(function (image) {
         images.push(image.base64);
@@ -278,7 +257,7 @@ chrome.runtime.onMessage.addListener(async function(request, sender, sendRespons
 
       console.log("bookInfo with images: ", bookInfo);
 
-      generateImgPDF(comicImg.artifacts[0].base64, pixelWidth, pixelHeight, bookInfo);
+      generateImgPDF(bookInfo, pixelWidth, pixelHeight);
     } else {
       console.log("No comic summary!");
     }
