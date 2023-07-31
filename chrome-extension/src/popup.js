@@ -48,8 +48,8 @@ function generateImgPDF(bookInfo, pixelWidth, pixelHeight) {
     doc.setFontSize(12);
     let firstCharacter = bookInfo.characters[0];
     let secondCharacter = bookInfo.characters[1];
-    let dialogueText1 = bookInfo.dialogues[firstCharacter][i] ? `${firstCharacter}: ${bookInfo.dialogues[firstCharacter][i]}` : ""
-    let dialogueText2 = bookInfo.dialogues[secondCharacter][i] ? `${secondCharacter}: ${bookInfo.dialogues[secondCharacter][i]}` : ""
+    let dialogueText1 = bookInfo.dialogues[firstCharacter][i-1] ? `${firstCharacter}: ${bookInfo.dialogues[firstCharacter][i-1]}` : ""
+    let dialogueText2 = bookInfo.dialogues[secondCharacter][i-1] ? `${secondCharacter}: ${bookInfo.dialogues[secondCharacter][i-1]}` : ""
     if (i === bookInfo.images.length -1 ) {
       dialogueText1 = "The End!"
       // dialogueText2 = `Learn more: ${bookInfo.originalUrl}`;

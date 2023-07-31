@@ -243,10 +243,19 @@ chrome.runtime.onMessage.addListener(async function(request, sender, sendRespons
         dialogues: characterDialogues
       }
 
+      let firstCharacter = bookInfo.characters[0];
+      let secondCharacter = bookInfo.characters[1];
+      let lengthOfDialoguesForFirstChar = bookInfo.dialogues[firstCharacter].length
+      let lengthOfDialoguesForSecondChar = bookInfo.dialogues[secondCharacter].length
+      let numOfImages = lengthOfDialoguesForFirstChar
+      if (numOfImages < lengthOfDialoguesForSecondChar) {
+        numOfImages = lengthOfDialoguesForSecondChar
+      }
+
       console.log("bookInfo: ", bookInfo);
 
       // generate images from stability.ai
-      const comicImg = await getTextToImage(bookInfo, bookInfo.dialogues[characterNames[0]].length + 1, pixelWidth, pixelHeight);
+      const comicImg = await getTextToImage(bookInfo, numOfImages + 1, pixelWidth, pixelHeight);
       // console.log(comicImg.artifacts[0].base64);
       let images = [];
       comicImg.artifacts.forEach(function (image) {
