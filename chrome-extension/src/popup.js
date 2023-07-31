@@ -7,12 +7,8 @@ function generateImgPDF(bookInfo, pixelWidth, pixelHeight) {
 
   doc.setFontSize(22);
 
-  // Variables for image dimensions
+  // Variables for Dialogue and Image dimensions
   const imgWidth = Math.ceil(pixelWidth/2.85), imgHeight = Math.ceil(pixelHeight/3.2), imgX = 10, imgY = 10;
-
-
-  // let titlePageWidth = doc.internal.pageSize.getWidth();
-  // let titlePageHeight = doc.internal.pageSize.getHeight();
 
 // Get the width and height of the text
   let textDimensions = doc.getTextDimensions(bookInfo.title);
